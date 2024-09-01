@@ -1,0 +1,28 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<main class="container">
+    <h2>{{ group.nombre }}</h2>
+    <p>Línea de investigación: {{ group.linea }}</p>
+    <p>{{ group.categoria }}</p>
+
+    <h3>Miembros</h3>
+    <ul>
+        {% for autor in autores %}
+        <li>{{ autor.nombre }}</li>
+        <a href="{% url 'create_autor' group.id %}">Añadir miembros</a>
+        {% empty %}
+        <li>No hay miembros por ahora.</li>
+        <a href="{% url 'create_autor' group.id %}">Añadir miembros</a>
+        {% endfor %}
+    </ul> 
+   <h3>Artículos relacionados</h3>
+    <ul>
+        {% for article in articles %}
+        <li>{{ article.titulo }}</li>
+        {% empty %}
+        <li>No hay artículos relacionados.</li>
+        {% endfor %}
+    </ul> 
+</main>
+{% endblock %}

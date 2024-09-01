@@ -1,0 +1,63 @@
+{% extends 'layouts/base.html' %} {% block content %}
+
+<main class="container d-flex">
+  <aside class="px-5">
+    <div class="row">
+      <h3 class="py-5">Grupos de investigacion </h3>
+      {{error}}
+      <ul class="list-group">
+        {% for group in groups %}
+        <a class="list-group-item" href="{% url 'group_detail' group.id %}">
+          <header class="d-flex justify-content-between">
+            <h6 >{{group.nombre|capfirst}}</h4>
+          </header>
+          <p>{{group.linea}}</p>
+          <p>{{group.categoria}}</p>
+        </a>
+        {% endfor %}
+      </ul>
+    </div>
+  </aside>
+  
+    <article class="container">
+      {% if not group_id %}
+      <div class="">
+        <h3 class="py-5">Articulos </h3>
+        {{error}}
+        <ul class="">
+          {% for article in articles %}
+          <a href="{% url 'article' article.id %}">
+            <header >
+              <h4 >{{article.titulo|capfirst}}</h4>
+            </header>
+            <p>{{article.ubicacion}}</p>
+            <p class="fw-bold">{{article.id_autor}}</p>
+          </a>
+          {% endfor %}
+        </ul>
+      </div>
+      {% else %}
+      <div>
+        <p>{{group_id.nombre}}</p>
+        <p>{{group_id.linea}}</p>
+        <p>{{group_id.categoria}}</p>
+      </div>
+      <div class="">
+        <h3 class="py-5">Articulos </h3>
+        {{error}}
+        <ul class="">
+          {% for article in articles %}
+          <a href="">
+            <header >
+              <h4 >{{article.titulo|capfirst}}</h4>
+            </header>
+            <p>{{article.ubicacion}}</p>
+            <p class="fw-bold">{{article.id_autor}}</p>
+          </a>
+          {% endfor %}
+        </ul>
+        </div>
+        {% endif %}
+    </article>
+</main>
+{% endblock %}

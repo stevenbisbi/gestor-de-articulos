@@ -1,0 +1,38 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>¿El autor es nuevo o ya está registrado?</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group mb-3">
+            <label>Seleccione una opción:</label>
+            <select name="autor_tipo" class="form-select" id="autor_tipo">
+                <option value="nuevo">Nuevo autor</option>
+                <option value="existente">Autor existente</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3" id="select_autor" style="display: none;">
+            <label for="id_autor">Seleccione un autor:</label>
+            <select id="id_autor" name="id_autor" class="form-select">
+                {% for autor in autores %}
+                <option value="{{ autor.id }}">{{ autor.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Continuar</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('autor_tipo').addEventListener('change', function() {
+        if (this.value === 'existente') {
+            document.getElementById('select_autor').style.display = 'block';
+        } else {
+            document.getElementById('select_autor').style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}
