@@ -3,17 +3,23 @@
 {% block content %}
 <main class="container my-4">
   <!-- Formulario de búsqueda -->
-  <form method="GET" action="{% url 'home' %}" class="d-flex mb-4">
-    <select name="search_by" class="form-select me-2">
-      <option value="titulo">Artículo</option>
-      <option value="autor">Autor</option>
-      <option value="palabras_clave">Palabras clave</option>
-      <option value="tipo">Tipo</option>
-      <option value="ubicacion">Ubicación</option>
-    </select>
-    <input type="text" name="q" class="form-control me-2" placeholder="Buscar...">
-    <button type="submit" class="btn btn-primary">Buscar</button>
-  </form>
+  <form id="search-form" method="get" action="{% url 'home' %}" class="mb-4">
+    <div class="input-group">
+        <select id="search-by" name="search_by" class="form-select">
+            <option value="titulo">Título</option>
+            <option value="autor">Autor</option>
+            <option value="palabras_clave">Palabras Clave</option>
+            <option value="tipo">Tipo</option>
+            <option value="ubicacion">Ubicación</option>
+        </select>
+        <input type="text" id="search-input" name="q" class="form-control" placeholder="Buscar..." autocomplete="off">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </div>
+</form>
+
+<ul id="suggestions-list" class="list-group mt-2"></ul>
+
+
     <div class="row">
         <!-- Barra lateral con grupos de investigación -->
         <aside class="col-md-3">
@@ -66,4 +72,38 @@
         </article>
     </div>
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    const searchBySelect = document.getElementById('search-by');
+    const suggestionsList = document.getElementById('suggestions-list');
+
+    searchInput.addEventListener('input', function() {
+        const query = searchInput.value;
+        const searchBy = searchBySelect.value;
+
+        if (query.length < 1) {
+            suggestionsList.innerHTML = ''; // No mostrar sugerencias si la consulta es demasiado corta
+            return;
+        }
+
+        fetch(`/search-suggestions/?q=${query}&search_by=${searchBy}`)
+            .then(response => response.json())
+            .then(data => {
+                suggestionsList.innerHTML = '';
+                data.suggestions.forEach(suggestion => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    li.textContent = suggestion;
+                    li.addEventListener('click', () => {
+                        searchInput.value = suggestion;
+                        suggestionsList.innerHTML = '';
+                    });
+                    suggestionsList.appendChild(li);
+                });
+            });
+    });
+});
+</script>
 {% endblock %}

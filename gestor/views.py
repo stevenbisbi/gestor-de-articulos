@@ -9,6 +9,8 @@ from django.db import IntegrityError
 from .forms import GroupForm, ActaCongresoForm, RevistaCientificaForm, InformeTecnicoForm, ArticuloForm, AutorForm
 from .models import Group_Invest, Acta_congreso, Revista_cientifica, Informe_tecnico, Articulo, Autor
 from datetime import date
+from django.http import JsonResponse
+from django.db.models import Q
 # Create your views here.
 
 def gestor(request):
@@ -27,7 +29,7 @@ def home(request):
             if search_by == 'titulo':
                 articles = articles.filter(titulo__icontains=query)
             elif search_by == 'autor':
-                articles = articles.filter(id_autor__nombre__icontains=query).capitalize()
+                articles = articles.filter(id_autor__nombre__icontains=query)
             elif search_by == 'palabras_clave':
                 articles = articles.filter(palabras_clave__icontains=query)
             elif search_by == 'tipo':
@@ -176,3 +178,21 @@ def article(request, article_id):
     }
     return render(request, 'article.html', context)
 
+def search_suggestions(request):
+    query = request.GET.get('q', '')
+    search_by = request.GET.get('search_by', 'titulo')  # Por defecto buscar por título
+    
+    if search_by == 'autor':
+        results = Autor.objects.filter(nombre__icontains=query).values_list('nombre', flat=True)
+    elif search_by == 'palabras_clave':
+        results = Articulo.objects.filter(palabras_clave__icontains=query).values_list('palabras_clave', flat=True)
+    elif search_by == 'tipo':
+        results = Articulo.objects.filter(id_tipo__tipo__icontains=query).values_list('id_tipo__tipo', flat=True)
+    elif search_by == 'ubicacion':
+        results = Articulo.objects.filter(ubicacion__icontains=query).values_list('ubicacion', flat=True)
+    else:
+        results = Articulo.objects.filter(titulo__icontains=query).values_list('titulo', flat=True)
+    
+    suggestions = list(set(results))  # Eliminar duplicados
+    
+    return JsonResponse({'suggestions': suggestions})
