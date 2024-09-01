@@ -2,10 +2,10 @@
 
 <main class="container">
     <div class="col-md-4 offset-md-4">
-      <form action="" method="POST" class="card card-body mt-5">
+      <form id="article-form" action="" method="POST" class="card card-body mt-5">
         <h1>Crear Articulo</h1>
         {% csrf_token %} {{form}}
-
+        
         <button class="btn btn-primary mt-3">Siguiente</button>
       </form>
     </div>

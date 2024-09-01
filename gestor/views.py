@@ -17,8 +17,24 @@ def gestor(request):
 @login_required
 def home(request):
     try:
+        search_by = request.GET.get('search_by')
+        query = request.GET.get('q')
+        
         groups = Group_Invest.objects.all()
         articles = Articulo.objects.all()
+        
+        if query:
+            if search_by == 'titulo':
+                articles = articles.filter(titulo__icontains=query)
+            elif search_by == 'autor':
+                articles = articles.filter(id_autor__nombre__icontains=query).capitalize()
+            elif search_by == 'palabras_clave':
+                articles = articles.filter(palabras_clave__icontains=query)
+            elif search_by == 'tipo':
+                articles = articles.filter(id_tipo__tipo__icontains=query)
+            elif search_by == 'ubicacion':
+                articles = articles.filter(ubicacion__icontains=query)
+        
         return render(request, 'home.html', {'groups': groups, 'articles': articles})
     except Exception as e:
         return render(request, 'home.html', {'error': f'Error al recuperar datos: {str(e)}'})
@@ -99,6 +115,7 @@ def update_acta_congreso(request, pk):
         form = ActaCongresoForm(instance=acta_congreso)
     return render(request, 'update_acta_congreso.html', {'form': form})
 
+
 @login_required
 def create_article(request):
     if request.method == 'POST':
@@ -137,9 +154,11 @@ def calcular_edad(fecha_nacimiento):
 def group_detail(request, group_id):
     group = get_object_or_404(Group_Invest, id=group_id)
     articles = Articulo.objects.filter(id_autor__id_grupo=group)  # Si tienes relación con artículos
+    autor = Autor.objects.filter(id_grupo=group_id)
     context = {
         'group': group,
         'articles': articles,
+        'autor': autor
     }
     return render(request, 'group_detail.html', context)
 
@@ -156,3 +175,4 @@ def article(request, article_id):
         'edad_autor': edad_autor,
     }
     return render(request, 'article.html', context)
+

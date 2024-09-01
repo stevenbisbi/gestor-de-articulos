@@ -14,5 +14,6 @@ urlpatterns = [
     path('create_autor/', views.create_autor, name='crear_autor'),
     path('grupo/<int:group_id>/create_autor/', views.create_autor, name='create_autor'),
     path('article/<int:article_id>/', views.article, name='article'),
+    #path('type_article/', views.type_article, name='tipo articulo'),
 ]
 

@@ -1,63 +1,69 @@
-{% extends 'layouts/base.html' %} {% block content %}
+{% extends 'layouts/base.html' %}
 
-<main class="container d-flex">
-  <aside class="px-5">
+{% block content %}
+<main class="container my-4">
+  <!-- Formulario de búsqueda -->
+  <form method="GET" action="{% url 'home' %}" class="d-flex mb-4">
+    <select name="search_by" class="form-select me-2">
+      <option value="titulo">Artículo</option>
+      <option value="autor">Autor</option>
+      <option value="palabras_clave">Palabras clave</option>
+      <option value="tipo">Tipo</option>
+      <option value="ubicacion">Ubicación</option>
+    </select>
+    <input type="text" name="q" class="form-control me-2" placeholder="Buscar...">
+    <button type="submit" class="btn btn-primary">Buscar</button>
+  </form>
     <div class="row">
-      <h3 class="py-5">Grupos de investigacion </h3>
-      {{error}}
-      <ul class="list-group">
-        {% for group in groups %}
-        <a class="list-group-item" href="{% url 'group_detail' group.id %}">
-          <header class="d-flex justify-content-between">
-            <h6 >{{group.nombre|capfirst}}</h4>
-          </header>
-          <p>{{group.linea}}</p>
-          <p>{{group.categoria}}</p>
-        </a>
-        {% endfor %}
-      </ul>
+        <!-- Barra lateral con grupos de investigación -->
+        <aside class="col-md-3">
+            <div class="px-3">
+                <h3 class="py-3">Grupos de investigación</h3>
+                {{ error }}
+                <ul class="list-group">
+                    {% for group in groups %}
+                    <a class="list-group-item" href="{% url 'group_detail' group.id %}">
+                        <header class="d-flex justify-content-between">
+                            <h6>{{ group.nombre|capfirst }}</h6>
+                        </header>
+                        <p>{{ group.linea }}</p>
+                        <p>{{ group.categoria }}</p>
+                    </a>
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Artículos -->
+        <article class="col-md-9">
+            <div>
+                <h3 class="py-3">Artículos</h3>
+                {{ error }}
+                <div class="row">
+                    {% for article in articles %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <a href="{% url 'article' article.id %}">
+                                    <h4 class="card-title">{{ article.titulo|capfirst }}</h4>
+                                    <p class="card-text">{{ article.ubicacion }}</p>
+                                    <p class="fw-bold">{{ article.id_autor }}</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if group_id %}
+            <div>
+                <p>{{ group_id.nombre }}</p>
+                <p>{{ group_id.linea }}</p>
+                <p>{{ group_id.categoria }}</p>
+            </div>
+            {% endif %}
+        </article>
     </div>
-  </aside>
-  
-    <article class="container">
-      {% if not group_id %}
-      <div class="">
-        <h3 class="py-5">Articulos </h3>
-        {{error}}
-        <ul class="">
-          {% for article in articles %}
-          <a href="{% url 'article' article.id %}">
-            <header >
-              <h4 >{{article.titulo|capfirst}}</h4>
-            </header>
-            <p>{{article.ubicacion}}</p>
-            <p class="fw-bold">{{article.id_autor}}</p>
-          </a>
-          {% endfor %}
-        </ul>
-      </div>
-      {% else %}
-      <div>
-        <p>{{group_id.nombre}}</p>
-        <p>{{group_id.linea}}</p>
-        <p>{{group_id.categoria}}</p>
-      </div>
-      <div class="">
-        <h3 class="py-5">Articulos </h3>
-        {{error}}
-        <ul class="">
-          {% for article in articles %}
-          <a href="">
-            <header >
-              <h4 >{{article.titulo|capfirst}}</h4>
-            </header>
-            <p>{{article.ubicacion}}</p>
-            <p class="fw-bold">{{article.id_autor}}</p>
-          </a>
-          {% endfor %}
-        </ul>
-        </div>
-        {% endif %}
-    </article>
 </main>
 {% endblock %}
