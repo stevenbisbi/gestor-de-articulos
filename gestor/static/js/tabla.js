@@ -5,7 +5,7 @@ const dataTableOptions={
     columnDefs:[
         {className:'centered',targets:[0,1,2,3,4,5,6,7]},
         {orderable: false, targets: [0,7]},
-        { searchable: false, targets: [1,2,3,4,5,6]}
+        { searchable: false, targets: [0,3,7]}
     ],
     pageLength:4,
     destroy: true
@@ -30,6 +30,21 @@ const listArticles = async()=>{
 
         let content=``;
         data.articulos.forEach((articulo, index) => {
+            let autorContent;
+            if (articulo.id_autor_id) {
+                autorContent = articulo.id_autor_id;
+            } else {
+                autorContent = 'Autor no asignado';
+            }
+        
+            let tipoContent;
+            if (articulo.id_tipo_id === 1) {
+                tipoContent = 'Informe Técnico';
+            } else if (articulo.id_tipo_id === 2) {
+                tipoContent = 'Acta de Congreso';
+            } else  {
+                tipoContent = 'Revista Científica';
+            }
             content+=`
                 <tr>
                     <td>${index+1}</td>
@@ -37,8 +52,8 @@ const listArticles = async()=>{
                     <td>${articulo.palabras_clave}</td>
                     <td>${articulo.copia === true ?"<i class='fa-solid fa-check' style='color: green;'></i>" : "<i class='fa-solid fa-xmark' style='color: red;'></i>"}</td>
                     <td>${articulo.ubicacion}</td>
-                    <td>${articulo.id_autor_id}</td>
-                    <td>${articulo.id_tipo_id}</td>
+                    <td>${autorContent}</td>
+                    <td>${tipoContent}</td>
                     <td>
                     <button class='btn btn-sm btn-primary' onclick="location.href='/article/${articulo.id}/edit'">
                         <i class='fa-solid fa-pencil'></i>
@@ -50,7 +65,7 @@ const listArticles = async()=>{
                 </tr>
             `;
         });
-        tableBody.innerHTML = content
+        tableBody.innerHTML = content;
     }catch(ex){
         
     }

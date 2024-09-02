@@ -199,7 +199,6 @@ def tabla(request):
     return render(request, 'tabla.html')
 def list_articles(request):
     articulos = list(Articulo.objects.values())
-    print(articulos)
     data= { 'articulos': articulos}
     return JsonResponse(data)
 
