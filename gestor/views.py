@@ -1,15 +1,13 @@
-from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm #Formulario de Registro
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from .forms import GroupForm, ActaCongresoForm, RevistaCientificaForm, InformeTecnicoForm, ArticuloForm, AutorForm
 from .models import Group_Invest, Acta_congreso, Revista_cientifica, Informe_tecnico, Articulo, Autor
 from datetime import date
-from django.http import JsonResponse
 from django.db.models import Q
 # Create your views here.
 
@@ -196,3 +194,30 @@ def search_suggestions(request):
     suggestions = list(set(results))  # Eliminar duplicados
     
     return JsonResponse({'suggestions': suggestions})
+
+def tabla(request):
+    return render(request, 'tabla.html')
+def list_articles(request):
+    articulos = list(Articulo.objects.values())
+    print(articulos)
+    data= { 'articulos': articulos}
+    return JsonResponse(data)
+
+def article_detail(request, id):
+    article = get_object_or_404(Articulo, id=id)
+
+    if request.method == 'POST':
+        form = ArticuloForm(request.POST, instance=article)
+        if form.is_valid():
+            form.save()
+            return redirect('tabla')
+        else:
+            return render(request, 'article_detail.html', {'article': article, 'form': form, 'error': 'Error al actualizar el artículo'})
+    else:
+        form = ArticuloForm(instance=article)
+        return render(request, 'article_detail.html', {'article': article, 'form': form})
+
+def delete_article(request, id):
+    articulo = get_object_or_404(Articulo, id=id)
+    articulo.delete()
+    return redirect('tabla')

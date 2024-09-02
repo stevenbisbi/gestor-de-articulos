@@ -38,16 +38,6 @@ class Autor(models.Model):
 
 class Tipo_articulo(models.Model):
     tipo = models.CharField(max_length=100,  default='Default Value')
-    """ TIPO_CHOICES = [
-        ('Informe Técnico', 'Tipo Informe Técnico'),
-        ('Acta de Congreso', 'Tipo Acta de Congreso'),
-        ('Revista Científica', 'Tipo Revista Científica'),
-    ]
-    tipo =models.CharField(max_length=100, choices=TIPO_CHOICES)
-    
-    class Meta:
-        verbose_name = 'Tipo de Artículo'
-        verbose_name_plural = 'Tipos de Artículo' """
         
     def __str__(self) -> str:
         return self.tipo
@@ -60,7 +50,7 @@ class Articulo(models.Model):
     id_autor=models.ForeignKey(Autor, on_delete=models.CASCADE)
     id_tipo=models.ForeignKey(Tipo_articulo, on_delete=models.CASCADE)
     
-    class Meta:
+    class Meta: 
         verbose_name = 'Artículo'
         verbose_name_plural = 'Artículos'
     def __str__(self) -> str:

@@ -1,0 +1,28 @@
+{% extends 'layouts/base.html' %} {% block content %}
+<main class="container mt-4">
+  <div class="row">
+    <div class="col-sm-12 col-md-12 col lg-12 col-xl-12">
+      <div class="table-responsive">
+        <table id="datatable-articulos" class="table">
+            <caption>
+                Articulos
+            </caption>
+          <thead>
+            <tr>
+              <th class="centered">#</th>
+              <th class="centered">Titulo</th>
+              <th class="centered">Palabras clave</th>
+              <th class="centered">Copia</th>
+              <th class="centered">Ubicación</th>
+              <th class="centered">Autor</th>
+              <th class="centered">Tipo</th>
+              <th class="centered">Opciones</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}
