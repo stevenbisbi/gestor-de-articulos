@@ -47,7 +47,7 @@ const listArticles = async()=>{
             }
             content+=`
                 <tr>
-                    <td>${index+1}</td>
+                    <td>${articulo.id}</td>
                     <td>${articulo.titulo}</td>
                     <td>${articulo.palabras_clave}</td>
                     <td>${articulo.copia === true ?"<i class='fa-solid fa-check' style='color: green;'></i>" : "<i class='fa-solid fa-xmark' style='color: red;'></i>"}</td>

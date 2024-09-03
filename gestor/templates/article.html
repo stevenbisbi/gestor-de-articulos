@@ -36,16 +36,54 @@
             <p>Ubicación: {{article.ubicacion}}</p>
             <p>Autor: {{article.id_autor}}</p>
             <p>Tipo de articulo: {{article.id_tipo}}</p>
-            <a href="">
-                <div class="d-flex"title="Editar artículo">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16 " title="Editar artículo">
-                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                      </svg>
-                   
-                </div>
-            </a>
+            <div class="d-flex">
+                <a href="{% url 'edit_article' article.id %}">
+                    <div class="d-flex" title="Editar artículo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" title="Editar artículo">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                        </svg>
+                    </div>
+                </a>
+                <a href="{% url 'delete_article' article.id %}" class="btn btn-sm btn-danger">
+                    <i class="fa-solid fa-trash-can"></i>
+                </a>
+            </div>
         </section>
+
+        {% if tipo_de_articulo == 1 %}
+        <section>
+            <h2>Informe Técnico</h2>
+            <p>Número: {{ informe.numero }}</p>
+            <p>Centro de Publicación: {{ informe.centro_pub }}</p>
+            <p>Fecha: {{ informe.fecha }}</p>
+        </section>
+        {% elif tipo_de_articulo == 2 %}
+        <section>
+            <h2>Acta de Congreso</h2>
+            <p>Edición: {{ acta.edicion }}</p>
+            <p>Ciudad: {{ acta.ciudad }}</p>
+            <p>Fecha: {{ acta.fecha }}</p>
+            <p>Tipo: {{ acta.tipo }}</p>
+            <p>Frecuencia: {{ acta.frecuencia }}</p>
+            <p>País: {{ acta.pais }}</p>
+            <p>Año Primera Edición: {{ acta.ano_primer_ed }}</p>
+        </section>
+        {% elif tipo_de_articulo == 3 %}
+        <section>
+            <h2>Revista Científica</h2>
+            <p>Nombre: {{ revista.nombre }}</p>
+            <p>Editor: {{ revista.editor }}</p>
+            <p>Año de Inicio: {{ revista.ano_inicio }}</p>
+            <p>Periodicidad: {{ revista.periodicidad }}</p>
+            <p>Tema: {{ revista.tema }}</p>
+            <p>Número de Edición: {{ revista.num_edicion }}</p>
+            <p>Páginas: {{ revista.paginas }}</p>
+            <p>Año de Publicación: {{ revista.ano_pub }}</p>
+        </section>
+        {% else %}
+        <h1>articulo no registrado en app</h1>
+        {% endif %}
     </div>
 </main>
 {% endblock %}

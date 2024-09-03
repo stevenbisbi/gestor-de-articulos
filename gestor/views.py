@@ -6,7 +6,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from .forms import GroupForm, ActaCongresoForm, RevistaCientificaForm, InformeTecnicoForm, ArticuloForm, AutorForm
-from .models import Group_Invest, Acta_congreso, Revista_cientifica, Informe_tecnico, Articulo, Autor
+from .models import Group_Invest, Acta_congreso, Revista_cientifica, Informe_tecnico, Articulo, Autor, Tipo_articulo
 from datetime import date
 from django.db.models import Q
 # Create your views here.
@@ -123,7 +123,7 @@ def create_article(request):
         if form.is_valid():
             new_article = form.save(commit=False)
             new_article.save()
-            return redirect('tipo articulos')
+            return redirect('tipo articulos', id=new_article.id)
         else:
             return render(request, 'create_article.html', {
                 'form': form,  # Pasar la instancia del formulario en caso de error
@@ -154,25 +154,44 @@ def calcular_edad(fecha_nacimiento):
 def group_detail(request, group_id):
     group = get_object_or_404(Group_Invest, id=group_id)
     articles = Articulo.objects.filter(id_autor__id_grupo=group)  # Si tienes relación con artículos
-    autor = Autor.objects.filter(id_grupo=group_id)
+    autores = Autor.objects.filter(id_grupo=group_id)
     context = {
         'group': group,
         'articles': articles,
-        'autor': autor
+        'autores': autores
     }
     return render(request, 'group_detail.html', context)
 
 def article(request, article_id):
     article = get_object_or_404(Articulo, id=article_id)
+    informe= Informe_tecnico.objects.all()
+    acta= Acta_congreso.objects.all()
+    revista= Revista_cientifica.objects.all()
+    if article.id_tipo == 'Infor':
+        tipo_objeto = get_object_or_404(Informe_tecnico, id_articulo=article.id)
+        print('tipo de objeto', tipo_objeto)
+    elif article.id_tipo == 2:
+        tipo_objeto = Acta_congreso.objects.filter(id_articulo=article.id)
+    elif article.id_tipo == 3:
+        tipo_objeto = Revista_cientifica.objects.filter(id_articulo=article.id)
     autor = article.id_autor # Si tienes relación con artículos
     grupo = autor.id_grupo
     # Calcular la edad del autor
     edad_autor = calcular_edad(autor.fecha_nac)
+     # Verificar si el artículo es de tipo Informe Técnico
+    tipo_de_articulo = article.id_tipo.id
+    for i in informe:
+        print(i)
     context = {
         'autor': autor,
         'article': article,
         'grupo': grupo,
         'edad_autor': edad_autor,
+        'tipo_de_articulo': tipo_de_articulo,
+        'informes':informe,
+        'actas':acta,
+        'revistas':revista
+        
     }
     return render(request, 'article.html', context)
 
@@ -220,3 +239,55 @@ def delete_article(request, id):
     articulo = get_object_or_404(Articulo, id=id)
     articulo.delete()
     return redirect('tabla')
+
+def type_article(request, id):
+    articulo = get_object_or_404(Articulo, id=id)
+    id_tipo = articulo.id_tipo.tipo  # Obtén el valor del tipo del artículo
+    
+    if id_tipo == 'Informe Técnico':
+        if request.method == 'GET':
+            form = InformeTecnicoForm(initial={'id_articulo': id})
+            return render(request, 'type_article.html', {'form': form, 'articulo': articulo})
+        else:
+            form = InformeTecnicoForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('home')  # Redirige a la página de inicio
+    elif id_tipo == 'Acta de Congreso':
+        if request.method == 'GET':
+            form = ActaCongresoForm(initial={'id_articulo': id})
+            return render(request, 'type_article.html', {'form': form, 'articulo': articulo})
+        else:
+            form = ActaCongresoForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('home')
+    else:
+        if request.method == 'GET':
+            form = RevistaCientificaForm(initial={'id_articulo': id})
+            return render(request, 'type_article.html', {'form': form, 'articulo': articulo})
+        else:
+            form = RevistaCientificaForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('home')
+            
+def autor(request, id):
+    autor = get_object_or_404(Autor, id=id)
+    edad =calcular_edad(autor.fecha_nac)
+    articles = Articulo.objects.filter(id_autor=autor)
+    return render(request, 'autor.html', {'autor': autor, 'edad': edad, 'articles':articles})
+
+def group(request, id):
+    group = get_object_or_404(Group_Invest, id=id)
+
+    if request.method == 'POST':
+        form = GroupForm(request.POST, instance=group)
+        if form.is_valid():
+            form.save()
+            return redirect('tabla')
+        else:
+            return render(request, 'group.html', {'group': group, 'form': form, 'error': 'Error al actualizar el artículo'})
+    else:
+        form = GroupForm(instance=group)
+        return render(request, 'group.html', {'group': group, 'form': form})

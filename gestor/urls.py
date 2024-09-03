@@ -17,8 +17,9 @@ urlpatterns = [
     path('article/<int:id>/edit/', views.article_detail, name='edit_article'),
     path('article/<int:id>/delete/', views.delete_article, name='delete_article'),
     path('search-suggestions/', views.search_suggestions, name='search_suggestions'),
-    #path('type_article/', views.type_article, name='tipo articulo'),
+    path('type_article/<int:id>', views.type_article, name='tipo articulos'),
     path('tabla/', views.tabla, name='tabla'),
     path('list_articles/', views.list_articles, name='lista articulos'),
+    path('autor/<int:id>', views.autor, name='autor'),
 ]
 
