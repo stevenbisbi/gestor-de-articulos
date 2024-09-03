@@ -9,6 +9,7 @@ from .forms import GroupForm, ActaCongresoForm, RevistaCientificaForm, InformeTe
 from .models import Group_Invest, Acta_congreso, Revista_cientifica, Informe_tecnico, Articulo, Autor, Tipo_articulo
 from datetime import date
 from django.db.models import Q
+from django.core.serializers import serialize
 # Create your views here.
 
 def gestor(request):
@@ -164,31 +165,23 @@ def group_detail(request, group_id):
 @login_required
 def article(request, article_id):
     article = get_object_or_404(Articulo, id=article_id)
-    informe= Informe_tecnico.objects.all()
     acta= Acta_congreso.objects.all()
+    informe = Informe_tecnico.objects.all()
     revista= Revista_cientifica.objects.all()
-    if article.id_tipo == 'Infor':
-        tipo_objeto = get_object_or_404(Informe_tecnico, id_articulo=article.id)
-        print('tipo de objeto', tipo_objeto)
-    elif article.id_tipo == 2:
-        tipo_objeto = Acta_congreso.objects.filter(id_articulo=article.id)
-    elif article.id_tipo == 3:
-        tipo_objeto = Revista_cientifica.objects.filter(id_articulo=article.id)
     autor = article.id_autor # Si tienes relación con artículos
     grupo = autor.id_grupo
     # Calcular la edad del autor
     edad_autor = calcular_edad(autor.fecha_nac)
      # Verificar si el artículo es de tipo Informe Técnico
     tipo_de_articulo = article.id_tipo.id
-    for i in informe:
-        print(i)
+
     context = {
         'autor': autor,
         'article': article,
         'grupo': grupo,
         'edad_autor': edad_autor,
         'tipo_de_articulo': tipo_de_articulo,
-        'informes':informe,
+        'informe': informe,
         'actas':acta,
         'revistas':revista
         
@@ -291,3 +284,27 @@ def group(request, id):
     else:
         form = GroupForm(instance=group)
         return render(request, 'group.html', {'group': group, 'form': form})
+    
+def listado_articulos(request):
+    # Serializa cada queryset a JSON
+    articulos = serialize('json', Articulo.objects.all())
+    informes_tecnicos = serialize('json', Informe_tecnico.objects.all())
+    actas_congreso = serialize('json', Acta_congreso.objects.all())
+    revistas_cientificas = serialize('json', Revista_cientifica.objects.all())
+
+    # Deserializa los JSON a listas de diccionarios
+    import json
+    articulos = json.loads(articulos)
+    informes_tecnicos = json.loads(informes_tecnicos)
+    actas_congreso = json.loads(actas_congreso)
+    revistas_cientificas = json.loads(revistas_cientificas)
+
+    # Construye el contexto con los datos serializados
+    context = {
+        'articulos': articulos,
+        'informes_tecnicos': informes_tecnicos,
+        'actas_congreso': actas_congreso,
+        'revistas_cientificas': revistas_cientificas,
+    }
+
+    return JsonResponse(context)

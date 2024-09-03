@@ -50,13 +50,15 @@
                 </a>
             </div>
         </section>
-
+       
         {% if tipo_de_articulo == 1 %}
         <section>
+            {% for info in informe %} {% if info.id_articulo == article %}
             <h2>Informe Técnico</h2>
             <p>Número: {{ informe.numero }}</p>
             <p>Centro de Publicación: {{ informe.centro_pub }}</p>
             <p>Fecha: {{ informe.fecha }}</p>
+            {% endif %} {% endfor %}
         </section>
         {% elif tipo_de_articulo == 2 %}
         <section>

@@ -20,6 +20,7 @@ urlpatterns = [
     path('type_article/<int:id>', views.type_article, name='tipo articulos'),
     path('tabla/', views.tabla, name='tabla'),
     path('list_articles/', views.list_articles, name='lista articulos'),
+    path('listado_articulos/', views.listado_articulos, name='lista articulosto'),
     path('autor/<int:id>', views.autor, name='autor'),
 ]
 
