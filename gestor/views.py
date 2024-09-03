@@ -93,7 +93,7 @@ def create_group(request):
         return render(request, 'create_group.html', {
             'form': form  # Pasar la instancia vacía del formulario
         })
-            
+@login_required           
 def create_acta_congreso(request):
     if request.method == 'POST':
         form = ActaCongresoForm(request.POST)
@@ -103,7 +103,7 @@ def create_acta_congreso(request):
     else:
         form = ActaCongresoForm()
     return render(request, 'create_acta_congreso.html', {'form': form})
-
+@login_required
 def update_acta_congreso(request, pk):
     acta_congreso = get_object_or_404(Acta_congreso, pk=pk)
     if request.method == 'POST':
@@ -135,7 +135,7 @@ def create_article(request):
             'form': form  # Pasar la instancia vacía del formulario
         })
 
-
+@login_required
 def create_autor(request, group_id):
     if request.method == 'POST':
         form = AutorForm(request.POST)
@@ -150,7 +150,7 @@ def create_autor(request, group_id):
 def calcular_edad(fecha_nacimiento):
     today = date.today()
     return today.year - fecha_nacimiento.year - ((today.month, today.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
-            
+@login_required            
 def group_detail(request, group_id):
     group = get_object_or_404(Group_Invest, id=group_id)
     articles = Articulo.objects.filter(id_autor__id_grupo=group)  # Si tienes relación con artículos
@@ -161,7 +161,7 @@ def group_detail(request, group_id):
         'autores': autores
     }
     return render(request, 'group_detail.html', context)
-
+@login_required
 def article(request, article_id):
     article = get_object_or_404(Articulo, id=article_id)
     informe= Informe_tecnico.objects.all()
@@ -194,7 +194,7 @@ def article(request, article_id):
         
     }
     return render(request, 'article.html', context)
-
+@login_required
 def search_suggestions(request):
     query = request.GET.get('q', '')
     search_by = request.GET.get('search_by', 'titulo')  # Por defecto buscar por título
@@ -213,14 +213,14 @@ def search_suggestions(request):
     suggestions = list(set(results))  # Eliminar duplicados
     
     return JsonResponse({'suggestions': suggestions})
-
+@login_required
 def tabla(request):
     return render(request, 'tabla.html')
 def list_articles(request):
     articulos = list(Articulo.objects.values())
     data= { 'articulos': articulos}
     return JsonResponse(data)
-
+@login_required
 def article_detail(request, id):
     article = get_object_or_404(Articulo, id=id)
 
@@ -234,12 +234,12 @@ def article_detail(request, id):
     else:
         form = ArticuloForm(instance=article)
         return render(request, 'article_detail.html', {'article': article, 'form': form})
-
+@login_required
 def delete_article(request, id):
     articulo = get_object_or_404(Articulo, id=id)
     articulo.delete()
     return redirect('tabla')
-
+@login_required
 def type_article(request, id):
     articulo = get_object_or_404(Articulo, id=id)
     id_tipo = articulo.id_tipo.tipo  # Obtén el valor del tipo del artículo
@@ -271,13 +271,13 @@ def type_article(request, id):
             if form.is_valid():
                 form.save()
                 return redirect('home')
-            
+@login_required            
 def autor(request, id):
     autor = get_object_or_404(Autor, id=id)
     edad =calcular_edad(autor.fecha_nac)
     articles = Articulo.objects.filter(id_autor=autor)
     return render(request, 'autor.html', {'autor': autor, 'edad': edad, 'articles':articles})
-
+@login_required
 def group(request, id):
     group = get_object_or_404(Group_Invest, id=id)
 
