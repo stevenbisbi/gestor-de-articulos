@@ -4,7 +4,7 @@ let dataTableIsInitialized=false;
 const dataTableOptions={
     columnDefs:[
         {className:'centered',targets:[0,1,2,3,4,5,6,7]},
-        {orderable: false, targets: [0,7]},
+        {orderable: false, targets: [0,3,7]},
         { searchable: false, targets: [0,3,7]}
     ],
     pageLength:4,
@@ -29,10 +29,10 @@ const listArticles = async()=>{
         const data= await response.json();
 
         let content=``;
-        data.articulos.forEach((articulo, index) => {
+        data.articulos.forEach((articulo) => {
             let autorContent;
             if (articulo.id_autor_id) {
-                autorContent = articulo.id_autor_id;
+                autorContent = articulo.id_autor;
             } else {
                 autorContent = 'Autor no asignado';
             }

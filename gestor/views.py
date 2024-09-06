@@ -116,7 +116,6 @@ def update_acta_congreso(request, pk):
         form = ActaCongresoForm(instance=acta_congreso)
     return render(request, 'update_acta_congreso.html', {'form': form})
 
-
 @login_required
 def create_article(request):
     if request.method == 'POST':
@@ -213,6 +212,11 @@ def list_articles(request):
     articulos = list(Articulo.objects.values())
     data= { 'articulos': articulos}
     return JsonResponse(data)
+
+def list_autores(request):
+    autores = list(Autor.objects.values())
+    data= { 'autores': autores}
+    return JsonResponse(data)
 @login_required
 def article_detail(request, id):
     article = get_object_or_404(Articulo, id=id)
@@ -284,7 +288,7 @@ def group(request, id):
     else:
         form = GroupForm(instance=group)
         return render(request, 'group.html', {'group': group, 'form': form})
-    
+  
 def listado_articulos(request):
     # Serializa cada queryset a JSON
     articulos = serialize('json', Articulo.objects.all())
