@@ -209,8 +209,10 @@ def search_suggestions(request):
 def tabla(request):
     return render(request, 'tabla.html')
 def list_articles(request):
-    articulos = list(Articulo.objects.values())
-    data= { 'articulos': articulos}
+    articulos = Articulo.objects.select_related('id_autor').values(
+        'id', 'titulo', 'palabras_clave', 'copia', 'ubicacion', 'id_autor__nombre', 'id_tipo_id'
+    )
+    data = {'articulos': list(articulos)}
     return JsonResponse(data)
 
 def list_autores(request):

@@ -23,20 +23,14 @@ dataTable=$('#datatable-articulos').DataTable(dataTableOptions);
 dataTableIsInitialized = true
 };
 
-const listArticles = async()=>{
-    try{
+const listArticles = async() => {
+    try {
         const response = await fetch('http://127.0.0.1:8000/list_articles/');
-        const data= await response.json();
+        const data = await response.json();
 
-        let content=``;
+        let content = ``;
         data.articulos.forEach((articulo) => {
-            let autorContent;
-            if (articulo.id_autor_id) {
-                autorContent = articulo.id_autor;
-            } else {
-                autorContent = 'Autor no asignado';
-            }
-        
+            let autorContent = articulo.id_autor__nombre || 'Autor no asignado';
             let tipoContent;
             if (articulo.id_tipo_id === 1) {
                 tipoContent = 'Informe Técnico';
@@ -45,7 +39,8 @@ const listArticles = async()=>{
             } else  {
                 tipoContent = 'Revista Científica';
             }
-            content+=`
+            
+            content += `
                 <tr>
                     <td>${articulo.id}</td>
                     <td>${articulo.titulo}</td>
@@ -66,10 +61,11 @@ const listArticles = async()=>{
             `;
         });
         tableBody.innerHTML = content;
-    }catch(ex){
+    } catch (ex) {
         
     }
 }
+
 
 window.addEventListener('load',async()=>{
     await initDataTable();
