@@ -9,6 +9,7 @@
         <p>Nacionalidad: {{ autor.nacionalidad }}</p>
         <p>Email: {{ autor.email }}</p>
         <p>Grupo investigativo: {{ autor.id_grupo }}</p>
+      
     </aside>
 
     <!-- Contenido principal -->
@@ -53,38 +54,43 @@
        
         {% if tipo_de_articulo == 1 %}
         <section>
-            {% for info in informe %} {% if info.id_articulo == article %}
             <h2>Informe Técnico</h2>
-            <p>Número: {{ informe.numero }}</p>
-            <p>Centro de Publicación: {{ informe.centro_pub }}</p>
-            <p>Fecha: {{ informe.fecha }}</p>
-            {% endif %} {% endfor %}
+            {% for info in informes %} {% if info.id_articulo_id == article.id %}
+                <p>Número: {{ info.numero }}</p>
+                <p>Centro de Publicación: {{ info.centro_pub }}</p>
+                <p>Fecha: {{ info.fecha }}</p>
+                {% endif %}
+            {% endfor %}
         </section>
         {% elif tipo_de_articulo == 2 %}
         <section>
             <h2>Acta de Congreso</h2>
-            <p>Edición: {{ acta.edicion }}</p>
-            <p>Ciudad: {{ acta.ciudad }}</p>
-            <p>Fecha: {{ acta.fecha }}</p>
-            <p>Tipo: {{ acta.tipo }}</p>
-            <p>Frecuencia: {{ acta.frecuencia }}</p>
-            <p>País: {{ acta.pais }}</p>
-            <p>Año Primera Edición: {{ acta.ano_primer_ed }}</p>
+            {% for acta in actas %} {% if acta.id_articulo_id == article.id %}
+                <p>Edición: {{ acta.edicion }}</p>
+                <p>Ciudad: {{ acta.ciudad }}</p>
+                <p>Fecha: {{ acta.fecha }}</p>
+                <p>Tipo: {{ acta.tipo }}</p>
+                <p>Frecuencia: {{ acta.frecuencia }}</p>
+                <p>País: {{ acta.pais }}</p>
+                <p>Año Primera Edición: {{ acta.ano_primer_ed }}</p>
+            {% endif %}{% endfor %}
         </section>
         {% elif tipo_de_articulo == 3 %}
         <section>
             <h2>Revista Científica</h2>
-            <p>Nombre: {{ revista.nombre }}</p>
-            <p>Editor: {{ revista.editor }}</p>
-            <p>Año de Inicio: {{ revista.ano_inicio }}</p>
-            <p>Periodicidad: {{ revista.periodicidad }}</p>
-            <p>Tema: {{ revista.tema }}</p>
-            <p>Número de Edición: {{ revista.num_edicion }}</p>
-            <p>Páginas: {{ revista.paginas }}</p>
-            <p>Año de Publicación: {{ revista.ano_pub }}</p>
+            {% for revista in revistas %} {% if revista.id_articulo_id == article.id %}
+                <p>Nombre: {{ revista.nombre }}</p>
+                <p>Editor: {{ revista.editor }}</p>
+                <p>Año de Inicio: {{ revista.ano_inicio }}</p>
+                <p>Periodicidad: {{ revista.periodicidad }}</p>
+                <p>Tema: {{ revista.tema }}</p>
+                <p>Número de Edición: {{ revista.num_edicion }}</p>
+                <p>Páginas: {{ revista.paginas }}</p>
+                <p>Año de Publicación: {{ revista.ano_pub }}</p>
+            {% endif %}{% endfor %}
         </section>
         {% else %}
-        <h1>articulo no registrado en app</h1>
+        <h1>Artículo no registrado en la aplicación</h1>
         {% endif %}
     </div>
 </main>

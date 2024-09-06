@@ -37,7 +37,23 @@ class Autor(models.Model):
         return self.nombre
 
 class Tipo_articulo(models.Model):
-    tipo = models.CharField(max_length=100,  default='Default Value')
+    DEFAULT = 'default_value'
+    INFORME_TECNICO = 'informe_tecnico'
+    ACTA_CONGRESO = 'acta_congreso'
+    REVISTA_CIENTIFICA = 'revista_cientifica'
+    
+    TIPO_CHOICES = [
+        (DEFAULT, 'Default Value'),
+        (INFORME_TECNICO, 'Informe Técnico'),
+        (ACTA_CONGRESO, 'Acta de Congreso'),
+        (REVISTA_CIENTIFICA, 'Revista Científica'),
+    ]
+
+    tipo = models.CharField(
+        max_length=100,
+        choices=TIPO_CHOICES,
+        default=DEFAULT,  # Establece un valor por defecto de las opciones
+    )
         
     def __str__(self) -> str:
         return self.tipo

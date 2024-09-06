@@ -43,7 +43,7 @@ const listArticles = async() => {
             content += `
                 <tr>
                     <td>${articulo.id}</td>
-                    <td>${articulo.titulo}</td>
+                    <td><a href="/article/${articulo.id}/">${articulo.titulo}</a></td>
                     <td>${articulo.palabras_clave}</td>
                     <td>${articulo.copia === true ?"<i class='fa-solid fa-check' style='color: green;'></i>" : "<i class='fa-solid fa-xmark' style='color: red;'></i>"}</td>
                     <td>${articulo.ubicacion}</td>
@@ -70,3 +70,4 @@ const listArticles = async() => {
 window.addEventListener('load',async()=>{
     await initDataTable();
 });
+

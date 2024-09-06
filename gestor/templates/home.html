@@ -22,7 +22,7 @@
 
     <div class="row">
         <!-- Barra lateral con grupos de investigación -->
-        <aside class="col-md-3">
+        <aside class="col-md-3 texto">
             <div class="px-3">
                 <h3 class="py-3">Grupos de investigación</h3>
                 {{ error }}
@@ -52,8 +52,9 @@
                             <div class="card-body">
                                 <a href="{% url 'article' article.id %}">
                                     <h4 class="card-title">{{ article.titulo|capfirst }}</h4>
-                                    <p class="card-text">{{ article.ubicacion }}</p>
-                                    <p class="fw-bold">{{ article.id_autor }}</p>
+                                    <p class="card-text"><span class="fw-bold">autor: </span>{{ article.id_autor }}</p>
+                                    <p class="card-text"><span class="fw-bold">Ubicación: </span> {{ article.ubicacion }}</p>
+                                    <p class="card-text"><span class="fw-bold">tipo: </span>{{ article.id_tipo }}</p>
                                 </a>
                             </div>
                         </div>
