@@ -12,36 +12,19 @@ from django.db.models import Q
 from django.core.serializers import serialize
 # Create your views here.
 
+# Helper functions (helpers or utils.py)
+def calcular_edad(fecha_nacimiento):
+    today = date.today()
+    return today.year - fecha_nacimiento.year - ((today.month, today.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
+
+
+
 def gestor(request):
     return render(request, 'gestor.html')
 
-@login_required
-def home(request):
-    try:
-        search_by = request.GET.get('search_by')
-        query = request.GET.get('q')
-        
-        groups = Group_Invest.objects.all()
-        articles = Articulo.objects.all()
-        
-        if query:
-            if search_by == 'titulo':
-                articles = articles.filter(titulo__icontains=query)
-            elif search_by == 'autor':
-                articles = articles.filter(id_autor__nombre__icontains=query)
-            elif search_by == 'palabras_clave':
-                articles = articles.filter(palabras_clave__icontains=query)
-            elif search_by == 'tipo':
-                articles = articles.filter(id_tipo__tipo__icontains=query)
-            elif search_by == 'ubicacion':
-                articles = articles.filter(ubicacion__icontains=query)
-        
-        return render(request, 'home.html', {'groups': groups, 'articles': articles})
-    except Exception as e:
-        return render(request, 'home.html', {'error': f'Error al recuperar datos: {str(e)}'})
 
+# Autenticación
 def signup(request):
-    
     if request.method == 'GET':
          return render(request, 'signup.html', {'form': UserCreationForm})
     else:
@@ -76,6 +59,36 @@ def signout(request):
     logout(request)
     return redirect('home')
 
+
+
+@login_required
+def home(request):
+    try:
+        search_by = request.GET.get('search_by')
+        query = request.GET.get('q')
+        
+        groups = Group_Invest.objects.all()
+        articles = Articulo.objects.all()
+        
+        if query:
+            if search_by == 'titulo':
+                articles = articles.filter(titulo__icontains=query)
+            elif search_by == 'autor':
+                articles = articles.filter(id_autor__nombre__icontains=query)
+            elif search_by == 'palabras_clave':
+                articles = articles.filter(palabras_clave__icontains=query)
+            elif search_by == 'tipo':
+                articles = articles.filter(id_tipo__tipo__icontains=query)
+            elif search_by == 'ubicacion':
+                articles = articles.filter(ubicacion__icontains=query)
+        
+        return render(request, 'home.html', {'groups': groups, 'articles': articles})
+    except Exception as e:
+        return render(request, 'home.html', {'error': f'Error al recuperar datos: {str(e)}'})
+    
+    
+
+# Vistas de Grupo
 @login_required
 def create_group(request):
     if request.method == 'POST':
@@ -94,6 +107,97 @@ def create_group(request):
         return render(request, 'create_group.html', {
             'form': form  # Pasar la instancia vacía del formulario
         })
+
+@login_required            
+def group_detail(request, group_id):
+    group = get_object_or_404(Group_Invest, id=group_id)
+    articles = Articulo.objects.filter(id_autor__id_grupo=group)  # Si tienes relación con artículos
+    autores = Autor.objects.filter(id_grupo=group_id)
+    context = {
+        'group': group,
+        'articles': articles,
+        'autores': autores
+    }
+    return render(request, 'group_detail.html', context)
+
+def delete_group(request, id):
+    group = get_object_or_404(Group_Invest, id = id)
+    group.delete()
+    return redirect('home')
+
+
+
+# Vistas de Artículos
+@login_required
+def create_article(request):
+    if request.method == 'POST':
+        form = ArticuloForm(request.POST)
+        if form.is_valid():
+            new_article = form.save(commit=False)
+            new_article.save()
+            return redirect('tipo articulos', id=new_article.id)
+        else:
+            return render(request, 'create_article.html', {
+                'form': form,  # Pasar la instancia del formulario en caso de error
+                'error': 'Por favor, proporcione información válida'
+            })
+    else:
+        form = ArticuloForm()  # Crear una instancia vacía del formulario
+        return render(request, 'create_article.html', {
+            'form': form  # Pasar la instancia vacía del formulario
+        })
+
+def article(request, article_id):
+    print(article_id)
+    article = get_object_or_404(Articulo.objects.select_related('id_autor', 'id_tipo'), id=article_id)
+    actas = Acta_congreso.objects.filter(id_articulo=article_id)
+    informes = Informe_tecnico.objects.all()
+    for info in informes:
+         if info.id_articulo_id == article_id:
+             print('si')
+
+    revistas = Revista_cientifica.objects.filter(id_articulo_id=article_id)  # Cambia revista por revistas en plural
+    autor = article.id_autor
+    grupo = autor.id_grupo
+    
+    # Calcular la edad del autor
+    edad_autor = calcular_edad(autor.fecha_nac)
+    
+    # Verificar si el artículo es de tipo Informe Técnico
+    tipo_de_articulo = article.id_tipo.id
+    
+    context = {
+        'autor': autor,
+        'article': article,
+        'grupo': grupo,
+        'edad_autor': edad_autor,
+        'tipo_de_articulo': tipo_de_articulo,
+        'informes': informes,
+        'actas': actas,
+        'revistas': revistas  # Asegúrate de que el nombre aquí coincida con el que usas en la plantilla
+    }
+    return render(request, 'article.html', context)
+
+@login_required
+def article_detail(request, id):
+    article = get_object_or_404(Articulo, id=id)
+
+    if request.method == 'POST':
+        form = ArticuloForm(request.POST, instance=article)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+        else:
+            return render(request, 'article_detail.html', {'article': article, 'form': form, 'error': 'Error al actualizar el artículo'})
+    else:
+        form = ArticuloForm(instance=article)
+        return render(request, 'article_detail.html', {'article': article, 'form': form})
+
+@login_required
+def delete_article(request, id):
+    articulo = get_object_or_404(Articulo, id=id)
+    articulo.delete()
+    return redirect('tabla')
 
 @login_required           
 def create_acta_congreso(request):
@@ -118,25 +222,9 @@ def update_acta_congreso(request, pk):
         form = ActaCongresoForm(instance=acta_congreso)
     return render(request, 'update_acta_congreso.html', {'form': form})
 
-@login_required
-def create_article(request):
-    if request.method == 'POST':
-        form = ArticuloForm(request.POST)
-        if form.is_valid():
-            new_article = form.save(commit=False)
-            new_article.save()
-            return redirect('tipo articulos', id=new_article.id)
-        else:
-            return render(request, 'create_article.html', {
-                'form': form,  # Pasar la instancia del formulario en caso de error
-                'error': 'Por favor, proporcione información válida'
-            })
-    else:
-        form = ArticuloForm()  # Crear una instancia vacía del formulario
-        return render(request, 'create_article.html', {
-            'form': form  # Pasar la instancia vacía del formulario
-        })
 
+
+# Vistas de Autor
 @login_required
 def create_autor(request, group_id):
     if request.method == 'POST':
@@ -149,53 +237,6 @@ def create_autor(request, group_id):
 
     return render(request, 'create_autor.html', {'form': form})
 
-def calcular_edad(fecha_nacimiento):
-    today = date.today()
-    return today.year - fecha_nacimiento.year - ((today.month, today.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
-
-@login_required            
-def group_detail(request, group_id):
-    group = get_object_or_404(Group_Invest, id=group_id)
-    articles = Articulo.objects.filter(id_autor__id_grupo=group)  # Si tienes relación con artículos
-    autores = Autor.objects.filter(id_grupo=group_id)
-    context = {
-        'group': group,
-        'articles': articles,
-        'autores': autores
-    }
-    return render(request, 'group_detail.html', context)
-
-def article(request, article_id):
-    print(article_id)
-    article = get_object_or_404(Articulo.objects.select_related('id_autor', 'id_tipo'), id=article_id)
-    actas = Acta_congreso.objects.filter(id_articulo=article_id)
-    informes = Informe_tecnico.objects.all()
-    for info in informes:
-         if info.id_articulo_id == article_id:
-             print('si')
-    
-    revistas = Revista_cientifica.objects.filter(id_articulo_id=article_id)  # Cambia revista por revistas en plural
-    
-    autor = article.id_autor
-    grupo = autor.id_grupo
-    
-    # Calcular la edad del autor
-    edad_autor = calcular_edad(autor.fecha_nac)
-    
-    # Verificar si el artículo es de tipo Informe Técnico
-    tipo_de_articulo = article.id_tipo.id
-    
-    context = {
-        'autor': autor,
-        'article': article,
-        'grupo': grupo,
-        'edad_autor': edad_autor,
-        'tipo_de_articulo': tipo_de_articulo,
-        'informes': informes,
-        'actas': actas,
-        'revistas': revistas  # Asegúrate de que el nombre aquí coincida con el que usas en la plantilla
-    }
-    return render(request, 'article.html', context)
 @login_required
 def search_suggestions(request):
     query = request.GET.get('q', '')
@@ -230,27 +271,6 @@ def list_autores(request):
     autores = list(Autor.objects.values())
     data= { 'autores': autores}
     return JsonResponse(data)
-
-@login_required
-def article_detail(request, id):
-    article = get_object_or_404(Articulo, id=id)
-
-    if request.method == 'POST':
-        form = ArticuloForm(request.POST, instance=article)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-        else:
-            return render(request, 'article_detail.html', {'article': article, 'form': form, 'error': 'Error al actualizar el artículo'})
-    else:
-        form = ArticuloForm(instance=article)
-        return render(request, 'article_detail.html', {'article': article, 'form': form})
-
-@login_required
-def delete_article(request, id):
-    articulo = get_object_or_404(Articulo, id=id)
-    articulo.delete()
-    return redirect('tabla')
 
 @login_required
 def type_article(request, id):
@@ -329,7 +349,15 @@ def listado_articulos(request):
 
     return JsonResponse(context)
 
-def delete_group(request, id):
-    group = get_object_or_404(Group_Invest, id = id)
-    group.delete()
+@login_required
+def autor_detail(request, id):
+    autor = get_object_or_404(Autor, id=id)
+    edad = calcular_edad(autor.fecha_nac)
+    articles = Articulo.objects.filter(id_autor=autor)
+    return render(request, 'autor.html', {'autor': autor, 'edad': edad, 'articles': articles})
+
+@login_required
+def delete_autor(request, id):
+    autor = get_object_or_404(Autor, id=id)
+    autor.delete()
     return redirect('home')

@@ -47,7 +47,7 @@ const listArticles = async() => {
                     <td>${articulo.palabras_clave}</td>
                     <td>${articulo.copia === true ?"<i class='fa-solid fa-check' style='color: green;'></i>" : "<i class='fa-solid fa-xmark' style='color: red;'></i>"}</td>
                     <td>${articulo.ubicacion}</td>
-                    <td>${autorContent}</td>
+                    <td><a href="/autor/${autorContent.id}/">${autorContent}</a></td>
                     <td>${tipoContent}</td>
                     <td>
                     <button class='btn btn-sm btn-primary' onclick="location.href='/article/${articulo.id}/edit'">
