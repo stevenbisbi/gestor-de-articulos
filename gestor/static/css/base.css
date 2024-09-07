@@ -33,9 +33,26 @@ a {
     color: #f9b620 !important;
 }
 
-h1,h3{
+h1,h2,h3{
     color: #f9b620 !important;
 }
 h6{
     color: #A47F12 !important;
+}
+
+.custom-color{
+    background-color: #F8F8F8 !important;
+}
+
+.p-color{
+    color: #F8F8F8 !important;
+}
+.a-color{
+    color: blue!important;
+}
+.p-color2{
+    color:#f9b620 ;
+}
+.decoration-no{
+    text-decoration: none;
 }

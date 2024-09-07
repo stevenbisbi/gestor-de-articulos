@@ -143,7 +143,7 @@ def create_autor(request, group_id):
         form = AutorForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('group_detail')
+            return redirect('home')
     else:
         form = AutorForm()
 
@@ -239,7 +239,7 @@ def article_detail(request, id):
         form = ArticuloForm(request.POST, instance=article)
         if form.is_valid():
             form.save()
-            return redirect('tabla')
+            return redirect('home')
         else:
             return render(request, 'article_detail.html', {'article': article, 'form': form, 'error': 'Error al actualizar el artículo'})
     else:
@@ -328,3 +328,8 @@ def listado_articulos(request):
     }
 
     return JsonResponse(context)
+
+def delete_group(request, id):
+    group = get_object_or_404(Group_Invest, id = id)
+    group.delete()
+    return redirect('home')
