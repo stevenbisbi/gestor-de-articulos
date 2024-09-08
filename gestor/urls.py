@@ -21,16 +21,16 @@ urlpatterns = [
     path('article/<int:id>/delete/', views.delete_article, name='delete_article'),
     #Autores
     path('create_autor/', views.create_autor, name='crear_autor'),
-    path('autor/<int:autor_id>/', views.autor, name= 'autor'),
+    path('autor/<str:autorContent>/', views.autor, name= 'autor'),
     path('autor/<int:id>/edit', views.autor_detail, name= 'autor'),
     path('autor/<int:id>/delete', views.delete_autor, name= 'autor'),
    
+   
+    path('ubicacion/<str:ubicacion>/', views.ubicacion, name= 'ubicacion'),
     path('search-suggestions/', views.search_suggestions, name='search_suggestions'),
     path('type_article/<int:id>', views.type_article, name='tipo articulos'),
     path('tabla/', views.tabla, name='tabla'),
     path('list_articles/', views.list_articles, name='lista articulos'),
     path('list_autores/', views.list_autores, name='lista autores'),
-    path('listado_articulos/', views.listado_articulos, name='lista articulosto'),
-    path('autor/<int:id>', views.autor, name='autor'),
 ]
 

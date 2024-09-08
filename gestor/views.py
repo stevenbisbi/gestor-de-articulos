@@ -305,15 +305,23 @@ def type_article(request, id):
                 form.save()
                 return redirect('home')
 @login_required            
-def autor(request, id):
-    autor = get_object_or_404(Autor, id=id)
-    edad =calcular_edad(autor.fecha_nac)
-    articles = Articulo.objects.filter(id_autor=autor)
-    return render(request, 'autor.html', {'autor': autor, 'edad': edad, 'articles':articles})
+def autor(request, autorContent):
+    # Aquí puedes obtener el autor a partir de su nombre
+    # Por ejemplo, si estás buscando en la base de datos, sería algo como:
+    autor = Autor.objects.filter(nombre=autorContent).first()  # Puedes ajustar esto para obtener el autor
+    if not autor:
+        return HttpResponse('Autor no encontrado', status=404)
+
+    # Supongamos que tienes artículos que mostrar del autor
+    articles = Articulo.objects.filter(id_autor=autor.id)
+    edad = calcular_edad(autor.fecha_nac)
+    # Renderizar los artículos en una plantilla
+    return render(request, 'autor.html', {'autor': autor, 'articles': articles, 'edad': edad})
+
+
 @login_required
 def group(request, id):
     group = get_object_or_404(Group_Invest, id=id)
-
     if request.method == 'POST':
         form = GroupForm(request.POST, instance=group)
         if form.is_valid():
@@ -325,29 +333,6 @@ def group(request, id):
         form = GroupForm(instance=group)
         return render(request, 'group.html', {'group': group, 'form': form})
   
-def listado_articulos(request):
-    # Serializa cada queryset a JSON
-    articulos = serialize('json', Articulo.objects.all())
-    informes_tecnicos = serialize('json', Informe_tecnico.objects.all())
-    actas_congreso = serialize('json', Acta_congreso.objects.all())
-    revistas_cientificas = serialize('json', Revista_cientifica.objects.all())
-
-    # Deserializa los JSON a listas de diccionarios
-    import json
-    articulos = json.loads(articulos)
-    informes_tecnicos = json.loads(informes_tecnicos)
-    actas_congreso = json.loads(actas_congreso)
-    revistas_cientificas = json.loads(revistas_cientificas)
-
-    # Construye el contexto con los datos serializados
-    context = {
-        'articulos': articulos,
-        'informes_tecnicos': informes_tecnicos,
-        'actas_congreso': actas_congreso,
-        'revistas_cientificas': revistas_cientificas,
-    }
-
-    return JsonResponse(context)
 
 @login_required
 def autor_detail(request, id):
@@ -361,3 +346,7 @@ def delete_autor(request, id):
     autor = get_object_or_404(Autor, id=id)
     autor.delete()
     return redirect('home')
+
+def ubicacion(request, ubicacion):
+    articles = Articulo.objects.filter(ubicacion = ubicacion)
+    return render(request, 'ubicacion.html', {'articles': articles, 'ubicacion': ubicacion})

@@ -2,11 +2,12 @@
 
 {% block content %}
 <main class="container">
-    <h2>{{ autor.nombre }}</h2>
-    <p>Edad: {{edad}}</p>
-    <p>Nacionalidad: {{ autor.nacionalidad }}</p>
-    <p>Email: {{ autor.email }}</p>
-    <p>Grupo: {{ autor.id_grupo }}</p>
+    <section class="card px-5 py-5">
+        <h2>{{ autor.nombre }}</h2>
+    <p><span class="fw-bold">Edad: </span>{{edad}}</p>
+    <p><span class="fw-bold">Nacionalidad: </span>{{ autor.nacionalidad }}</p>
+    <p><span class="fw-bold">Email: </span>{{ autor.email }}</p>
+    <p><span class="fw-bold">Grupo: </span>{{ autor.id_grupo }}</p>
     <a href="">
         <div class="d-flex" title="Autor">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -15,13 +16,14 @@
             </svg>
         </div>
     </a>
+    </section>
 
-    <h3>Artículos relacionados</h3>
+    <h3 class="py-3 ">Artículos relacionados</h3>
     <ul>
         {% for article in articles %}
         <a href="{% url 'article' article.id %}">
             <li>
-                <h3>{{ article.titulo }}</h3>
+                <h3 class="p-color">{{ article.titulo }}</h3>
             </li>
         </a>
             

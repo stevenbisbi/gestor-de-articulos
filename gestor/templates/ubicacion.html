@@ -1,0 +1,15 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+
+<main class="container">
+    <h1 class="py-5">{{ ubicacion|capfirst }}</h1>
+
+    <section class="py-5 card ">
+        {% for article in articles %}
+    <a href="{% url 'article' article.id %}">
+        <h3 class="px-5">{{article.titulo}}</h3>
+    </a>
+    {% endfor %}
+    </section>
+</main>
+{% endblock %}

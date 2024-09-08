@@ -5,10 +5,10 @@
     <!-- Barra lateral izquierda pegada a la izquierda -->
     <aside class="bg-light p-3 card" style="min-width: 50px;">
         <h3>{{ autor.nombre }}</h3>
-        <p>Edad: {{edad_autor}}</p>
-        <p>Nacionalidad: {{ autor.nacionalidad }}</p>
-        <p>Email: {{ autor.email }}</p>
-        <p>Grupo investigativo: {{ autor.id_grupo }}</p>
+        <p><span class="fw-bold">Edad: </span>{{edad_autor}}</p>
+        <p><span class="fw-bold">Nacionalidad: </span>{{ autor.nacionalidad }}</p>
+        <p><span class="fw-bold">Email: </span>{{ autor.email }}</p>
+        <p><span class="fw-bold">Grupo investigativo: </span>{{ autor.id_grupo }}</p>
       
     </aside>
 
@@ -21,7 +21,7 @@
             <div class="px-5 card">
                 <div>
                     <h3>{{grupo}}</h3>
-                    <p>Línea: {{grupo.linea}}</p>
+                    <p><span class="fw-bold">Línea: </span>{{grupo.linea}}</p>
                     <p>{{grupo.categoria}}</p>
                 </div>
             </div>
@@ -57,9 +57,9 @@
         <section>
             <h2>Informe Técnico</h2>
             {% for info in informes %} {% if info.id_articulo_id == article.id %}
-                <p>Número: {{ info.numero }}</p>
-                <p>Centro de Publicación: {{ info.centro_pub }}</p>
-                <p>Fecha: {{ info.fecha }}</p>
+                <p><span class="fw-bold">Número: </span>{{ info.numero }}</p>
+                <p><span class="fw-bold">Centro de Publicación: </span>{{ info.centro_pub }}</p>
+                <p><span class="fw-bold">Fecha: </span>{{ info.fecha }}</p>
                 {% endif %}
             {% endfor %}
         </section>
@@ -67,27 +67,27 @@
         <section>
             <h2>Acta de Congreso</h2>
             {% for acta in actas %} {% if acta.id_articulo_id == article.id %}
-                <p>Edición: {{ acta.edicion }}</p>
-                <p>Ciudad: {{ acta.ciudad }}</p>
-                <p>Fecha: {{ acta.fecha }}</p>
-                <p>Tipo: {{ acta.tipo }}</p>
-                <p>Frecuencia: {{ acta.frecuencia }}</p>
-                <p>País: {{ acta.pais }}</p>
-                <p>Año Primera Edición: {{ acta.ano_primer_ed }}</p>
+                <p><span class="fw-bold">Edición: </span>{{ acta.edicion }}</p>
+                <p><span class="fw-bold">Ciudad: </span>{{ acta.ciudad }}</p>
+                <p><span class="fw-bold">Fecha: </span>{{ acta.fecha }}</p>
+                <p><span class="fw-bold">Tipo: </span>{{ acta.tipo }}</p>
+                <p><span class="fw-bold">Frecuencia: </span>{{ acta.frecuencia }}</p>
+                <p><span class="fw-bold">País: </span>{{ acta.pais }}</p>
+                <p><span class="fw-bold">Año Primera Edición: </span>{{ acta.ano_primer_ed }}</p>
             {% endif %}{% endfor %}
         </section>
         {% elif tipo_de_articulo == 3 %}
         <section>
             <h2>Revista Científica</h2>
             {% for revista in revistas %} {% if revista.id_articulo_id == article.id %}
-                <p>Nombre: {{ revista.nombre }}</p>
-                <p>Editor: {{ revista.editor }}</p>
-                <p>Año de Inicio: {{ revista.ano_inicio }}</p>
-                <p>Periodicidad: {{ revista.periodicidad }}</p>
-                <p>Tema: {{ revista.tema }}</p>
-                <p>Número de Edición: {{ revista.num_edicion }}</p>
-                <p>Páginas: {{ revista.paginas }}</p>
-                <p>Año de Publicación: {{ revista.ano_pub }}</p>
+                <p><span class="fw-bold">Nombre: </span>{{ revista.nombre }}</p>
+                <p><span class="fw-bold">Editor: </span>{{ revista.editor }}</p>
+                <p><span class="fw-bold">Año de Inicio: </span>{{ revista.ano_inicio }}</p>
+                <p><span class="fw-bold">Periodicidad: </span>{{ revista.periodicidad }}</p>
+                <p><span class="fw-bold">Tema: </span>{{ revista.tema }}</p>
+                <p><span class="fw-bold">Número de Edición: /span>{{ revista.num_edicion }}</p>
+                <p><span class="fw-bold">Páginas: </span>{{ revista.paginas }}</p>
+                <p><span class="fw-bold">Año de Publicación: </span>{{ revista.ano_pub }}</p>
             {% endif %}{% endfor %}
         </section>
         {% else %}
