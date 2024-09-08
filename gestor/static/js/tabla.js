@@ -31,14 +31,15 @@ const listArticles = async() => {
         data.articulos.forEach((articulo) => {
             let autorContent = articulo.id_autor__nombre || 'Autor no asignado';
             let tipoContent;
-            if (articulo.id_tipo_id === 1) {
+            if (articulo.id_tipo_id === 4) {
                 tipoContent = 'Informe Técnico';
-            } else if (articulo.id_tipo_id === 2) {
+            } else if (articulo.id_tipo_id === 5) {
                 tipoContent = 'Acta de Congreso';
-            } else  {
+            } else if (articulo.id_tipo_id === 6) {
                 tipoContent = 'Revista Científica';
+            } else {
+                tipoContent ='Tipo de informe no indexado'
             }
-            console.log(autorContent)
             content += `
                 <tr>
                     <td>${articulo.id}</td>
