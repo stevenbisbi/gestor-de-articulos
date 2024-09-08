@@ -53,7 +53,7 @@
         </section>
        
         <div class="px-5 py-3 p-color">
-            {% if tipo_de_articulo == "Informe Técnico" %}
+            {% if tipo_de_articulo == 4 %}
         <section>
             <h2>Informe Técnico</h2>
             {% for info in informes %} {% if info.id_articulo_id == article.id %}
@@ -63,7 +63,7 @@
                 {% endif %}
             {% endfor %}
         </section>
-        {% elif tipo_de_articulo == 2 %}
+        {% elif tipo_de_articulo == 5 %}
         <section>
             <h2>Acta de Congreso</h2>
             {% for acta in actas %} {% if acta.id_articulo_id == article.id %}
@@ -76,7 +76,7 @@
                 <p><span class="fw-bold">Año Primera Edición: </span>{{ acta.ano_primer_ed }}</p>
             {% endif %}{% endfor %}
         </section>
-        {% elif tipo_de_articulo == 3 %}
+        {% elif tipo_de_articulo == 6 %}
         <section>
             <h2>Revista Científica</h2>
             {% for revista in revistas %} {% if revista.id_articulo_id == article.id %}
