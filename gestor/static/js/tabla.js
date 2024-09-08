@@ -25,7 +25,7 @@ dataTableIsInitialized = true
 
 const listArticles = async() => {
     try {
-        const response = await fetch('http://127.0.0.1:8000/list_articles/');
+        const response = await fetch('https://gestor-de-articulos.onrender.com/list_articles/');
         const data = await response.json();
         let content = ``;
         data.articulos.forEach((articulo) => {
