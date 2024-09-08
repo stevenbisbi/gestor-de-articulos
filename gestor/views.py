@@ -151,7 +151,6 @@ def article(request, article_id):
     article = get_object_or_404(Articulo.objects.select_related('id_autor', 'id_tipo'), id=article_id)
     actas = Acta_congreso.objects.filter(id_articulo=article_id)
     informes = Informe_tecnico.objects.all()
-    print(article.id_tipo)
     for info in informes:
          if info.id_articulo_id == article_id:
              print('si')
@@ -165,6 +164,7 @@ def article(request, article_id):
     
     # Verificar si el artículo es de tipo Informe Técnico
     tipo_de_articulo = article.id_tipo.id
+    print(tipo_de_articulo)
     
     context = {
         'autor': autor,
