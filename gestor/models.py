@@ -38,9 +38,9 @@ class Autor(models.Model):
 
 class Tipo_articulo(models.Model):
     DEFAULT = 'default_value'
-    INFORME_TECNICO = 'informe_tecnico'
-    ACTA_CONGRESO = 'acta_congreso'
-    REVISTA_CIENTIFICA = 'revista_cientifica'
+    INFORME_TECNICO = 'Informe Técnico'
+    ACTA_CONGRESO = 'Acta de Congreso'
+    REVISTA_CIENTIFICA = 'Revista Científica'
     
     TIPO_CHOICES = [
         (DEFAULT, 'Default Value'),
