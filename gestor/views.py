@@ -9,19 +9,42 @@ from .forms import GroupForm, ActaCongresoForm, RevistaCientificaForm, InformeTe
 from .models import Group_Invest, Acta_congreso, Revista_cientifica, Informe_tecnico, Articulo, Autor, Tipo_articulo
 from datetime import date
 from django.db.models import Q
-from django.core.serializers import serialize
+
 # Create your views here.
 
-# Helper functions (helpers or utils.py)
+# Helper functions
 def calcular_edad(fecha_nacimiento):
     today = date.today()
     return today.year - fecha_nacimiento.year - ((today.month, today.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
 
-
-
+#Interfaces de inicio
 def gestor(request):
     return render(request, 'gestor.html')
 
+@login_required
+def home(request):
+    try:
+        search_by = request.GET.get('search_by')
+        query = request.GET.get('q')
+        
+        groups = Group_Invest.objects.all()
+        articles = Articulo.objects.all()
+        
+        if query:
+            if search_by == 'titulo':
+                articles = articles.filter(titulo__icontains=query)
+            elif search_by == 'autor':
+                articles = articles.filter(id_autor__nombre__icontains=query)
+            elif search_by == 'palabras_clave':
+                articles = articles.filter(palabras_clave__icontains=query)
+            elif search_by == 'tipo':
+                articles = articles.filter(id_tipo__tipo__icontains=query)
+            elif search_by == 'ubicacion':
+                articles = articles.filter(ubicacion__icontains=query)
+        
+        return render(request, 'home.html', {'groups': groups, 'articles': articles})
+    except Exception as e:
+        return render(request, 'home.html', {'error': f'Error al recuperar datos: {str(e)}'})
 
 # Autenticación
 def signup(request):
@@ -59,34 +82,6 @@ def signout(request):
     logout(request)
     return redirect('home')
 
-
-
-@login_required
-def home(request):
-    try:
-        search_by = request.GET.get('search_by')
-        query = request.GET.get('q')
-        
-        groups = Group_Invest.objects.all()
-        articles = Articulo.objects.all()
-        
-        if query:
-            if search_by == 'titulo':
-                articles = articles.filter(titulo__icontains=query)
-            elif search_by == 'autor':
-                articles = articles.filter(id_autor__nombre__icontains=query)
-            elif search_by == 'palabras_clave':
-                articles = articles.filter(palabras_clave__icontains=query)
-            elif search_by == 'tipo':
-                articles = articles.filter(id_tipo__tipo__icontains=query)
-            elif search_by == 'ubicacion':
-                articles = articles.filter(ubicacion__icontains=query)
-        
-        return render(request, 'home.html', {'groups': groups, 'articles': articles})
-    except Exception as e:
-        return render(request, 'home.html', {'error': f'Error al recuperar datos: {str(e)}'})
-    
-    
 
 # Vistas de Grupo
 @login_required
@@ -199,79 +194,6 @@ def delete_article(request, id):
     articulo.delete()
     return redirect('tabla')
 
-@login_required           
-def create_acta_congreso(request):
-    if request.method == 'POST':
-        form = ActaCongresoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')  # Redirige a la página de inicio o a donde sea necesario
-    else:
-        form = ActaCongresoForm()
-    return render(request, 'create_acta_congreso.html', {'form': form})
-
-@login_required
-def update_acta_congreso(request, pk):
-    acta_congreso = get_object_or_404(Acta_congreso, pk=pk)
-    if request.method == 'POST':
-        form = ActaCongresoForm(request.POST, instance=acta_congreso)
-        if form.is_valid():
-            form.save()
-            return redirect('home')  # Redirige a la página de inicio o a donde sea necesario
-    else:
-        form = ActaCongresoForm(instance=acta_congreso)
-    return render(request, 'update_acta_congreso.html', {'form': form})
-
-
-
-# Vistas de Autor
-@login_required
-def create_autor(request, group_id):
-    if request.method == 'POST':
-        form = AutorForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = AutorForm()
-
-    return render(request, 'create_autor.html', {'form': form})
-
-@login_required
-def search_suggestions(request):
-    query = request.GET.get('q', '')
-    search_by = request.GET.get('search_by', 'titulo')  # Por defecto buscar por título
-    
-    if search_by == 'autor':
-        results = Autor.objects.filter(nombre__icontains=query).values_list('nombre', flat=True)
-    elif search_by == 'palabras_clave':
-        results = Articulo.objects.filter(palabras_clave__icontains=query).values_list('palabras_clave', flat=True)
-    elif search_by == 'tipo':
-        results = Articulo.objects.filter(id_tipo__tipo__icontains=query).values_list('id_tipo__tipo', flat=True)
-    elif search_by == 'ubicacion':
-        results = Articulo.objects.filter(ubicacion__icontains=query).values_list('ubicacion', flat=True)
-    else:
-        results = Articulo.objects.filter(titulo__icontains=query).values_list('titulo', flat=True)
-    
-    suggestions = list(set(results))  # Eliminar duplicados
-    
-    return JsonResponse({'suggestions': suggestions})
-
-@login_required
-def tabla(request):
-    return render(request, 'tabla.html')
-def list_articles(request):
-    articulos = Articulo.objects.select_related('id_autor').values(
-        'id', 'titulo', 'palabras_clave', 'copia', 'ubicacion', 'id_autor__nombre', 'id_tipo_id'
-    )
-    data = {'articulos': list(articulos)}
-    return JsonResponse(data)
-
-def list_autores(request):
-    autores = list(Autor.objects.values())
-    data= { 'autores': autores}
-    return JsonResponse(data)
-
 @login_required
 def type_article(request, id):
     articulo = get_object_or_404(Articulo, id=id)
@@ -304,6 +226,21 @@ def type_article(request, id):
             if form.is_valid():
                 form.save()
                 return redirect('home')
+
+
+# Vistas de Autor
+@login_required
+def create_autor(request, group_id):
+    if request.method == 'POST':
+        form = AutorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = AutorForm()
+
+    return render(request, 'create_autor.html', {'form': form})
+
 @login_required            
 def autor(request, autorContent):
     # Aquí puedes obtener el autor a partir de su nombre
@@ -317,6 +254,36 @@ def autor(request, autorContent):
     edad = calcular_edad(autor.fecha_nac)
     # Renderizar los artículos en una plantilla
     return render(request, 'autor.html', {'autor': autor, 'articles': articles, 'edad': edad})
+
+@login_required
+def search_suggestions(request):
+    query = request.GET.get('q', '')
+    search_by = request.GET.get('search_by', 'titulo')  # Por defecto buscar por título
+    
+    if search_by == 'autor':
+        results = Autor.objects.filter(nombre__icontains=query).values_list('nombre', flat=True)
+    elif search_by == 'palabras_clave':
+        results = Articulo.objects.filter(palabras_clave__icontains=query).values_list('palabras_clave', flat=True)
+    elif search_by == 'tipo':
+        results = Articulo.objects.filter(id_tipo__tipo__icontains=query).values_list('id_tipo__tipo', flat=True)
+    elif search_by == 'ubicacion':
+        results = Articulo.objects.filter(ubicacion__icontains=query).values_list('ubicacion', flat=True)
+    else:
+        results = Articulo.objects.filter(titulo__icontains=query).values_list('titulo', flat=True)
+    
+    suggestions = list(set(results))  # Eliminar duplicados
+    
+    return JsonResponse({'suggestions': suggestions})
+
+@login_required
+def tabla(request):
+    return render(request, 'tabla.html')
+def list_articles(request):
+    articulos = Articulo.objects.select_related('id_autor').values(
+        'id', 'titulo', 'palabras_clave', 'copia', 'ubicacion', 'id_autor__nombre', 'id_tipo_id'
+    )
+    data = {'articulos': list(articulos)}
+    return JsonResponse(data)
 
 
 @login_required
@@ -332,7 +299,6 @@ def group(request, id):
     else:
         form = GroupForm(instance=group)
         return render(request, 'group.html', {'group': group, 'form': form})
-  
 
 @login_required
 def autor_detail(request, id):
