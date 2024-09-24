@@ -50,7 +50,7 @@ class ActaCongresoForm(forms.ModelForm):
             'tipo': forms.TextInput(attrs={'class': 'form-control'}),
             'frecuencia': forms.TextInput(attrs={'class': 'form-control'}),
             'pais': forms.TextInput(attrs={'class': 'form-control'}),
-            'ano_primer_ed': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'ano_primer_ed': forms.NumberInput(attrs={'class': 'form-control'}),
             'id_articulo': forms.Select(attrs={'class': 'form-control'}),
         }
         
