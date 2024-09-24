@@ -82,7 +82,6 @@ def signout(request):
     logout(request)
     return redirect('home')
 
-
 # Vistas de Grupo
 @login_required
 def create_group(request):
@@ -119,8 +118,6 @@ def delete_group(request, id):
     group = get_object_or_404(Group_Invest, id = id)
     group.delete()
     return redirect('home')
-
-
 
 # Vistas de Artículos
 @login_required
@@ -278,13 +275,13 @@ def search_suggestions(request):
 @login_required
 def tabla(request):
     return render(request, 'tabla.html')
+
 def list_articles(request):
     articulos = Articulo.objects.select_related('id_autor').values(
         'id', 'titulo', 'palabras_clave', 'copia', 'ubicacion', 'id_autor__nombre', 'id_tipo_id'
     )
     data = {'articulos': list(articulos)}
     return JsonResponse(data)
-
 
 @login_required
 def group(request, id):
