@@ -80,16 +80,15 @@ WSGI_APPLICATION = 'UniCrud.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',  # Usa 'postgresql' para bases de datos PostgreSQL
-        'NAME': 'bbdgeneral',  # Nombre de la base de datos
-        'USER': 'bbdgeneral_user',  # Nombre de usuario de la base de datos
-        'PASSWORD': 'yMA0MuD8Clp0ZMIfLn4HeUe52oLjFSIT',  # Contraseña de la base de datos
-        'HOST': 'postgresql://bbdgeneral_user:yMA0MuD8Clp0ZMIfLn4HeUe52oLjFSIT@dpg-crpipoe8ii6s73cik540-a/bbdgeneral',  # URL del host de la base de datos, que te proporciona Render
-        'PORT': '5432',  # El puerto para PostgreSQL es normalmente 5432
-    }
+    'default': dj_database_url.config(
+        default='postgresql://bbdgeneral_user:yMA0MuD8Clp0ZMIfLn4HeUe52oLjFSIT@dpg-crpipoe8ii6s73cik540-a.region.render.com:5432/bbdgeneral',
+        conn_max_age=600
+    )
 }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
