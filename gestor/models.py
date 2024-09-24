@@ -88,7 +88,7 @@ class Acta_congreso(models.Model):
     tipo=models.CharField(max_length=60)    
     frecuencia=models.CharField(max_length=60)    
     pais=models.CharField(max_length=60)
-    ano_primer_ed=models.DateField()
+    ano_primer_ed=models.IntegerField()
     id_articulo=models.ForeignKey(Articulo, on_delete=models.CASCADE)
     
     class Meta:
