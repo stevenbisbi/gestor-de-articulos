@@ -80,14 +80,13 @@ WSGI_APPLICATION = 'UniCrud.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://bbdgeneral_user:yMA0MuD8Clp0ZMIfLn4HeUe52oLjFSIT@dpg-crpipoe8ii6s73cik540-a.region.render.com:5432/bbdgeneral',
+        # Replace this value with your local database's connection string.
+        default='postgresql://postgres:postgres@localhost:5432/mysite',
         conn_max_age=600
     )
 }
-
 
 
 # Password validation
