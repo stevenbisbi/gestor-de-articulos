@@ -86,7 +86,7 @@ DATABASES = {
         'NAME': 'bbdgeneral',  # Nombre de la base de datos
         'USER': 'bbdgeneral_user',  # Nombre de usuario de la base de datos
         'PASSWORD': 'yMA0MuD8Clp0ZMIfLn4HeUe52oLjFSIT',  # Contraseña de la base de datos
-        'HOST': 'dpg-crpipoe8ii6s73cik540-a',  # URL del host de la base de datos, que te proporciona Render
+        'HOST': 'postgresql://bbdgeneral_user:yMA0MuD8Clp0ZMIfLn4HeUe52oLjFSIT@dpg-crpipoe8ii6s73cik540-a/bbdgeneral',  # URL del host de la base de datos, que te proporciona Render
         'PORT': '5432',  # El puerto para PostgreSQL es normalmente 5432
     }
 }
